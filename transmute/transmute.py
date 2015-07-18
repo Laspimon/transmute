@@ -249,7 +249,7 @@ class Transmute(object):
             if len(next_level) == 0:
                 for key in container_keys:
                     if not key in next_level:
-                        next_level[key] = child_type()
+                        next_level[key] = child_type() # This is wrong. We only know single child type here. Cannot extrapolate.
             if not child_index in next_level:
                 next_level[child_index] = child_type()
             next_level = next_level[child_index]
