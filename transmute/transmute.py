@@ -249,7 +249,11 @@ class Transmute(object):
             if len(next_level) == 0:
                 for key in container_keys:
                     if not key in next_level:
-                        next_level[key] = child_type() # This is wrong. We only know single child type here. Cannot extrapolate.
+                        next_level[key] = None #child_type() 
+                        # This is wrong. We only know single child type here. Cannot extrapolate.
+                        # Throw this up in the beginning of the method so that sub trees are created once and only once.
+                        if key == child_type:
+                            next_level[child_index] = child_type()
             if not child_index in next_level:
                 next_level[child_index] = child_type()
             next_level = next_level[child_index]
