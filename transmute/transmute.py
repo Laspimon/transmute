@@ -181,29 +181,6 @@ class Transmute(object):
             #!!     this_level[index] = tuple(this_level[index])
         return next_level
 
-    def finalize(self, items = None, next_level = None):
-        if len(items) == 2:
-            if items[0] is dict:
-                next_level.append(items[1])
-            elif items[0] is list:
-                for x in items[1]:
-                    next_level.append(x)
-            elif items[0] is tuple:
-                next_level.append(items[1])
-            elif items[0] is str:
-                next_level = items[1]
-        else:
-            if items[3] is dict:
-                for k,v in items[-1].items():
-                    next_level[k] = v
-            elif items[3] is list:
-                for x in items[-1]:
-                    next_level.append(x)
-            elif items[3] is tuple:
-                next_level.append(items[-1])
-            elif items[3] is str:
-                next_level[items[-2]] = items[-1]
-
     def recreate(self, overview, output = None):
         if output is None: output = {}
         for road in overview:
