@@ -56,8 +56,6 @@ class TranslationModeller(object):
                 if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_1')
                 overview.append(navi[:] +\
                     [[dict, container.keys(), type(v), v, k]])
-                    #[['final', dict, len(container), type(v), len(v), k, v]])
-                #print ('|||', [['final', dict, len(container), type(v), len(v), k, v]])                    
             else:
                 if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_2')
                 level += 1
@@ -86,12 +84,12 @@ class TranslationModeller(object):
         for i,v in enumerate(container):
             if type(v) in INDEVISIBLE_FORMS:
                 overview.append(navi[:] +\
-                    [[tuple, len(container), type(v), v, i]]) #!! list -> tuple
+                    [[tuple, len(container), type(v), v, i]])
                 if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_1')
             else:
                 if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_2')
                 level += 1
-                navi.append([tuple, len(container), type(v), len(v), i]) #!! list -> tuple
+                navi.append([tuple, len(container), type(v), len(v), i])
                 overview, navi = self.get_key_val(v, overview, navi, level)
                 navi = navi[:-1]
                 level -= 1
