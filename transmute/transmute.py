@@ -252,7 +252,7 @@ class Transmute(object):
         #print (20*'=====')
         print (next_level)
         print()
-        return next_level
+        return next_level #!! This returns a clean next_level, meaning that old one is overwritten.
 
     def open_list_container(self, next_level, container_type, container_info, child_type, child_info, index, output = None):
         #print ('======')
