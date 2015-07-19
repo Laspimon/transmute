@@ -39,10 +39,6 @@ class TranslationModeller(object):
         if level is None: level = 0
 
         if self.debug: print ('container', container)
-        if False:#type(container) in INDEVISIBLE_FORMS:
-            #overview.append(navi[:] + [[str, container]])
-            overview.append(navi[:] + [
-                ['final', list, len(container), type(v), len(v), i, v]])
         if isinstance(container, dict):
             container, overview, navi, level = self.get_dict(
                     container, overview, navi, level)
@@ -55,65 +51,50 @@ class TranslationModeller(object):
         return overview, navi
 
     def get_dict(self, container, overview, navi, level):
-        #for x in [container, overview, navi, level]:
-        #    print ('+=+=+=', x)
-        #print ()
-        if False: #not False in [type(x) in INDEVISIBLE_FORMS for x in container.values()]:
-            if self.debug: self.printout(container, overview, navi, level, 0, 0, 'dict_0')
-            overview.append(navi[:] + [[dict, container]])
-        else:
-            for k,v in container.items():
-                if type(v) in INDEVISIBLE_FORMS:
-                    if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_1')
-                    overview.append(navi[:] +\
-                        [[dict, container.keys(), type(v), v, k]])
-                        #[['final', dict, len(container), type(v), len(v), k, v]])
-                    #print ('|||', [['final', dict, len(container), type(v), len(v), k, v]])                    
-                else:
-                    if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_2')
-                    level += 1
-                    navi.append([dict, container.keys(), type(v), len(v), k])
-                    overview, navi = self.get_key_val(v, overview, navi, level)
-                    navi = navi[:-1]
-                    level -= 1
+        for k,v in container.items():
+            if type(v) in INDEVISIBLE_FORMS:
+                if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_1')
+                overview.append(navi[:] +\
+                    [[dict, container.keys(), type(v), v, k]])
+                    #[['final', dict, len(container), type(v), len(v), k, v]])
+                #print ('|||', [['final', dict, len(container), type(v), len(v), k, v]])                    
+            else:
+                if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_2')
+                level += 1
+                navi.append([dict, container.keys(), type(v), len(v), k])
+                overview, navi = self.get_key_val(v, overview, navi, level)
+                navi = navi[:-1]
+                level -= 1
         return container, overview, navi, level
 
     def get_list(self, container, overview, navi, level):
-        if False:#not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
-            if self.debug: self.printout(container, overview, navi, level, 0, 0, 'list_0')
-            overview.append(navi[:] + [[list, container]])
-        else:
-            for i,v in enumerate(container):
-                if type(v) in INDEVISIBLE_FORMS:
-                    if self.debug: self.printout(container, overview, navi, level, i, v, 'list_1')
-                    overview.append(navi[:] +\
-                        [[list, len(container), type(v), v, i]])
-                else:
-                    if self.debug: self.printout(container, overview, navi, level, i, v, 'list_2')
-                    level += 1
-                    navi.append([list, len(container), type(v), len(v), i])
-                    overview, navi = self.get_key_val(v, overview, navi, level)
-                    navi = navi[:-1]
-                    level -= 1
+        for i,v in enumerate(container):
+            if type(v) in INDEVISIBLE_FORMS:
+                if self.debug: self.printout(container, overview, navi, level, i, v, 'list_1')
+                overview.append(navi[:] +\
+                    [[list, len(container), type(v), v, i]])
+            else:
+                if self.debug: self.printout(container, overview, navi, level, i, v, 'list_2')
+                level += 1
+                navi.append([list, len(container), type(v), len(v), i])
+                overview, navi = self.get_key_val(v, overview, navi, level)
+                navi = navi[:-1]
+                level -= 1
         return container, overview, navi, level
 
     def get_tuple(self, container, overview, navi, level):
-        if False:#not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
-            if self.debug: self.printout(container, overview, navi, level, 0, 0, 'tuple_0')
-            overview.append(navi[:] + [[tuple, container]])
-        else:
-            for i,v in enumerate(container):
-                if type(v) in INDEVISIBLE_FORMS:
-                    overview.append(navi[:] +\
-                        [[tuple, len(container), type(v), v, i]]) #!! list -> tuple
-                    if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_1')
-                else:
-                    if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_2')
-                    level += 1
-                    navi.append([tuple, len(container), type(v), len(v), i]) #!! list -> tuple
-                    overview, navi = self.get_key_val(v, overview, navi, level)
-                    navi = navi[:-1]
-                    level -= 1
+        for i,v in enumerate(container):
+            if type(v) in INDEVISIBLE_FORMS:
+                overview.append(navi[:] +\
+                    [[tuple, len(container), type(v), v, i]]) #!! list -> tuple
+                if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_1')
+            else:
+                if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_2')
+                level += 1
+                navi.append([tuple, len(container), type(v), len(v), i]) #!! list -> tuple
+                overview, navi = self.get_key_val(v, overview, navi, level)
+                navi = navi[:-1]
+                level -= 1
         return container, overview, navi, level
 
     @staticmethod
@@ -149,17 +130,10 @@ class Transmute(object):
         self.right_left = TranslationModeller(right_form, left_form, debug)
         self.r_overview, navi = self.right_left.get_key_val(right_form)
 
-    def translate(self):
-        if isinstance(self.left, dict):
-            pass
-
     def convert_to_tuples(self, road, output):
         next_level = output
         for step in road:
             if self.debug: print (road)
-            container_type, container_info, child_type, child_info, index = step
-            #for i,x in enumerate(step):
-            #    print(i,x)
             if child_type is tuple:
                 next_level[index] = tuple(next_level[index])
             next_level = next_level[index]
@@ -167,9 +141,8 @@ class Transmute(object):
 
     def follow_roadmap(self, road, output):
         next_level = output
-        for step in road:#[:-1]:
+        for step in road:
             if self.debug: print (road)
-            #print (step)
             container_type, container_info, child_type, child_info, index = step
             if container_type is dict:
                 next_level = self.open_dict_container(next_level, container_type,
@@ -177,8 +150,6 @@ class Transmute(object):
             elif container_type is list or container_type is tuple:
                 next_level = self.open_list_container(next_level, container_type,
                             container_info, child_type, child_info, index, output)
-            #!! if next_type is tuple:
-            #!!     this_level[index] = tuple(this_level[index])
         return next_level
 
     def recreate(self, overview, output = None):
@@ -190,7 +161,6 @@ class Transmute(object):
         return output
 
     def test_it(self, l_tree, r_tree):
-        #print(input_tree)
         l_recreated = self.recreate(self.l_overview)
         if l_recreated == l_tree:
             print (True)
@@ -207,13 +177,8 @@ class Transmute(object):
             print (False)
             print ('|', r_tree)
             print ('|', r_recreated)
-            #print()
-            #for old, new in zip(sorted(r_tree.values()), sorted(r_recreated.values())):
-            #    print (old == new,
-            #          old, new)
         print(4 * '========')
         print(4 * '========')
-        #print()
 
     def open_dict_container(self, next_level, container_type, container_info, child_type, child_info, index):
         if len(next_level) == 0:
@@ -236,12 +201,13 @@ class Transmute(object):
             next_level[index] = child_info
         else:
             print('___________fail 1')
-        return next_level #!! This returns a clean next_level, meaning that old one is overwritten.
+        return next_level
 
     def open_list_container(self, next_level, container_type, container_info, child_type, child_info, index, output = None):
         for x in range(container_info-len(next_level)):
             next_level.append(None)
-        self.printout_list(next_level, container_type, container_info, child_type, child_info, index, output, 'Open List')
+        self.printout_list(next_level, container_type, container_info, 
+                           child_type, child_info, index, output, 'Open List')
         if child_type is list or child_type is tuple:
             if len(next_level) == 0:
                 for x in range(container_info):
@@ -251,12 +217,9 @@ class Transmute(object):
                 for x in range(container_info-len(next_level)):
                     next_level.append(None)
             if next_level[index] is None:
-                next_level[index] = [] #!! child_type()                
+                next_level[index] = []
             next_level = next_level[index]
-            #print (output)
-        elif child_type is str or child_type is unicode:
-            next_level[index] = child_info
-        elif child_type is int or child_type is float:
+        elif child_type in [str, unicode, int, float]:
             next_level[index] = child_info
         elif child_type is dict:
             if next_level[index] is None:
@@ -264,7 +227,6 @@ class Transmute(object):
             next_level = next_level[index]
         else:
             print('___________fail 2', child_type)
-        #print (20*':::::')
         self.printout_list(next_level, container_type, container_info, child_type, child_info, index, output, 'Open List')
         return next_level
 
@@ -313,4 +275,4 @@ right_form = {
 example = Transmute(left_form, right_form, False)
 example.test_it(left_form, right_form)
 
-#print (left_form)
+
