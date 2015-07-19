@@ -19,7 +19,7 @@ right_form = {
     }
 
 class TranslationModeller(object):
-    """Takes two structures and formalizes a translation model.
+    """Takes two structures and formulates a translation model.
 
     Input tree and output tree must share contents, so that the methods below
     can recognize the structures, and how to translate between them."""
