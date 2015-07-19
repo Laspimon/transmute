@@ -154,31 +154,19 @@ class Transmute(object):
             pass
 
     def follow_roadmap(self, road, output):
-        #print ('""""""""""""" follow road:', road)
         next_level = output
-        #print ('++++++++++++++++++++++++++++++++++++1 output', output)
         for step in road:#[:-1]:
             if self.debug: print (road)
-            #print ('== step:')
-            print (step)
+            #print (step)
             container_type, container_info, child_type, child_info, index = step
-            #!! this_level = next_level
-            #!! next_type = child_type
-            #print ('++++++++++++++++++++++++++++++++++++2 output', output)
             if container_type is dict:
-                print ('++++++++++++++++++++++++++++++++++++2a1 output', output)
                 next_level = self.open_dict_container(next_level, container_type,
                             container_info, child_type, child_info, index)
-                print ('++++++++++++++++++++++++++++++++++++2a2 output', output)
             elif container_type is list or container_type is tuple:
-                print ('++++++++++++++++++++++++++++++++++++2b1 output', output)
                 next_level = self.open_list_container(next_level, container_type,
                             container_info, child_type, child_info, index, output)
-                print ('++++++++++++++++++++++++++++++++++++2b2 output', output)
             #!! if next_type is tuple:
             #!!     this_level[index] = tuple(this_level[index])
-            #print ('++++++++++++++++++++++++++++++++++++3 output', output)
-        #print ('{1--<', 'next_level', type(next_level))
         return next_level
 
     def finalize(self, items = None, next_level = None):
@@ -206,11 +194,8 @@ class Transmute(object):
 
     def recreate(self, overview, output = None):
         if output is None: output = {}
-        print('$$$$$$$$$$$$$$$$$$$$$$$$$')
         for road in overview:
-            print (1, 'outoutoutout', output)
             next_level = self.follow_roadmap(road = road, output = output)
-            print (2, 'outoutoutout', output)
         return output
 
     def test_it(self, l_tree, r_tree):
@@ -236,50 +221,33 @@ class Transmute(object):
         #print()
 
     def open_dict_container(self, next_level, container_type, container_info, child_type, child_info, index):
-        container_keys = container_info
-        child_len = child_info
-        child_key = index
-        #print('___')
-        #print ('>>>',next_level)
         if len(next_level) == 0:
-            #print(1)
-            for key in container_keys:
+            for key in container_info:
                 if not key in next_level.keys():
                     next_level[key] = None
         if child_type is dict:
-            #print(2)
-            if next_level[child_key] is None:
-                next_level[child_key] = child_type()
-            next_level = next_level[child_key]
+            if next_level[index] is None:
+                next_level[index] = child_type()
+            next_level = next_level[index]
         elif child_type is list:
-            #print(3)
-            if next_level[child_key] is None:
-                next_level[child_key] = child_type()
-            if not child_key in next_level.keys():
-                next_level[child_key] = child_type()
-            next_level = next_level[child_key]
+            if next_level[index] is None:
+                next_level[index] = child_type()
+            if not index in next_level.keys():
+                next_level[index] = child_type()
+            next_level = next_level[index]
         elif child_type is str or child_type is unicode:
-            #print(4)
+            next_level[index] = child_info
+        elif child_type is int or child_type is float:
             next_level[index] = child_info
         else:
             print('___________fail 1')
-        #print ('{2--<', 'next_level', type(next_level))
-        #print (20*'=====')
-        #print ('###', next_level)
-        #print()
         return next_level #!! This returns a clean next_level, meaning that old one is overwritten.
 
     def open_list_container(self, next_level, container_type, container_info, child_type, child_info, index, output = None):
-        #print ('======')
-        print (output)
-        #print (next_level)
         for x in range(container_info-len(next_level)):
             next_level.append(None)
-        #print (20*':::::')
         self.printout_list(next_level, container_type, container_info, child_type, child_info, index, output, 'Open List')
-        print (output)
         if child_type is list or child_type is tuple:
-            #print (output)
             if len(next_level) == 0:
                 for x in range(container_info):
                     next_level.append(None)
@@ -291,15 +259,14 @@ class Transmute(object):
                 next_level[index] = [] #!! child_type()                
             next_level = next_level[index]
             #print (output)
-            print (1, output)
         elif child_type is str or child_type is unicode:
             next_level[index] = child_info
-            print (2, output)            
+        elif child_type is int or child_type is float:
+            next_level[index] = child_info
         elif child_type is dict:
             if next_level[index] is None:
                 next_level[index] = child_type()
             next_level = next_level[index]
-            print (3, output)
         else:
             print('___________fail 2', child_type)
         #print (20*':::::')
@@ -348,7 +315,7 @@ right_form = {
     'opposites': [{'first': 'low', 'second': 'high'}, {'first': 'big', 'second': 'small'}]
     }
 
-#example = Transmute(left_form, right_form, False)
-#example.test_it(left_form, right_form)
+example = Transmute(left_form, right_form, False)
+example.test_it(left_form, right_form)
 
 #print (left_form)
