@@ -39,8 +39,8 @@ class TranslationModeller(object):
         if level is None: level = 0
 
         if self.debug: print ('container', container)
-        if type(container) in INDEVISIBLE_FORMS:
-            overview.append(navi[:] + [[str, container]])
+        if False:#type(container) in INDEVISIBLE_FORMS:
+            #overview.append(navi[:] + [[str, container]])
             overview.append(navi[:] + [
                 ['final', list, len(container), type(v), len(v), i, v]])
         if isinstance(container, dict):
@@ -66,7 +66,8 @@ class TranslationModeller(object):
                 if type(v) in INDEVISIBLE_FORMS:
                     if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_1')
                     overview.append(navi[:] +\
-                        [['final', dict, len(container), type(v), len(v), k, v]])
+                        [[dict, container.keys(), type(v), v, k]])
+                        #[['final', dict, len(container), type(v), len(v), k, v]])
                     #print ('|||', [['final', dict, len(container), type(v), len(v), k, v]])                    
                 else:
                     if self.debug: self.printout(container, overview, navi, level, k, v, 'dict_2')
@@ -78,7 +79,7 @@ class TranslationModeller(object):
         return container, overview, navi, level
 
     def get_list(self, container, overview, navi, level):
-        if not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
+        if False:#not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
             if self.debug: self.printout(container, overview, navi, level, 0, 0, 'list_0')
             overview.append(navi[:] + [[list, container]])
         else:
@@ -86,7 +87,7 @@ class TranslationModeller(object):
                 if type(v) in INDEVISIBLE_FORMS:
                     if self.debug: self.printout(container, overview, navi, level, i, v, 'list_1')
                     overview.append(navi[:] +\
-                        [['final', list, len(container), type(v), len(v), i, v]])
+                        [[list, len(container), type(v), v, i]])
                 else:
                     if self.debug: self.printout(container, overview, navi, level, i, v, 'list_2')
                     level += 1
@@ -97,14 +98,14 @@ class TranslationModeller(object):
         return container, overview, navi, level
 
     def get_tuple(self, container, overview, navi, level):
-        if not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
+        if False:#not False in [type(x) in INDEVISIBLE_FORMS for x in container]:
             if self.debug: self.printout(container, overview, navi, level, 0, 0, 'tuple_0')
             overview.append(navi[:] + [[tuple, container]])
         else:
             for i,v in enumerate(container):
                 if type(v) in INDEVISIBLE_FORMS:
                     overview.append(navi[:] +\
-                        [['final', list, len(container), type(v), len(v), i, v]]) #!! list -> tuple
+                        [[list, len(container), type(v), v, i]]) #!! list -> tuple
                     if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_1')
                 else:
                     if self.debug: self.printout(container, overview, navi, level, i, v, 'tuple_2')
@@ -155,7 +156,7 @@ class Transmute(object):
     def follow_roadmap(self, road, output):
         print ('""""""""""""" follow road:', road)
         next_level = output
-        for step in road[:-1]:
+        for step in road:#[:-1]:
             if self.debug: print (road)
             #print ('== step:')
             #print (step)
@@ -169,6 +170,8 @@ class Transmute(object):
                 if container_type is tuple:
                     next_level = tuple(next_level)
         print ('{1--<', 'next_level', type(next_level))
+        print (next_level)
+        print (road)
         return next_level
 
     def finalize(self, items = None, next_level = None):
@@ -229,7 +232,7 @@ class Transmute(object):
             print('---', x)
         for road in overview:
             next_level = self.follow_roadmap(road = road, output = output)
-            self.finalize(items = road[-1], next_level = next_level)
+            #self.finalize(items = road[-1], next_level = next_level)
         return output
 
     def test_it(self, l_tree, r_tree):
@@ -253,6 +256,7 @@ class Transmute(object):
         print()
 
     def open_dict_container(self, next_level, container_type, container_info, child_type, child_info, index):
+        print ('???')
         print (20*'=====')
         for i,x in enumerate([next_level, container_type, container_info, child_type, child_info, index]):
             print (i, x)
@@ -296,6 +300,10 @@ class Transmute(object):
             print('___', child_type, index, next_level[index])
             #print(step)
             next_level[index] = ''
+            print ('| Container: list, Child: str')
+            print ('index:', index)
+            next_level[index] = 999
+
         else:
             print('___________fail 1')
         print()
@@ -306,6 +314,8 @@ class Transmute(object):
         return next_level
 
     def open_list_container(self, next_level, container_type, container_info, child_type, child_info, index, output = None):
+        for x in range(container_info-len(next_level)):
+            next_level.append(None)
         print (20*':::::')
         self.printout_list(next_level, container_type, container_info, child_type, child_info, index, output, 'Open List')
         if child_type is list:
@@ -316,17 +326,21 @@ class Transmute(object):
             next_level[child_index] = child_type()
             next_level = next_level[child_index]
         elif child_type is str or child_type is unicode:
-            print ('| Container: list, Child: str')
+            print ('| Container: list, Child: str') #!!
+            print ('index:', index)
+            next_level[index] = 999
         elif child_type is tuple:
             container_len = container_info
         elif child_type is dict:
             print ()
-            for x in range(container_info-len(next_level)):
-                next_level.append(None)
-            for x in [next_level, container_type, container_info, child_type, child_info, index, output]:
-                print (x)
+            next_level[index] = child_type()
+            next_level = next_level[index]
+            #for x in range(container_info-len(next_level)):
+            #    next_level.append(None)
+            #for x in [next_level, container_type, container_info, child_type, child_info, index, output]:
+            #    print (x)
             print()
-            print ( container_info )
+            print ( container_info , child_info)
             print()
             #1/0
         else:
@@ -335,7 +349,7 @@ class Transmute(object):
         return next_level
 
     def printout_list(self, next_level, container_type, container_info, child_type, child_info, index, output, msg):
-        if not self.debug: return
+        #if not self.debug: return
         print()
         print('____________________________', msg)
         print('next_level:    ',     next_level)
