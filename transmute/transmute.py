@@ -153,6 +153,18 @@ class Transmute(object):
         if isinstance(self.left, dict):
             pass
 
+    def convert_to_tuples(self, road, output):
+        next_level = output
+        for step in road:
+            if self.debug: print (road)
+            container_type, container_info, child_type, child_info, index = step
+            #for i,x in enumerate(step):
+            #    print(i,x)
+            if child_type is tuple:
+                next_level[index] = tuple(next_level[index])
+            next_level = next_level[index]
+        return next_level
+
     def follow_roadmap(self, road, output):
         next_level = output
         for step in road:#[:-1]:
@@ -196,6 +208,8 @@ class Transmute(object):
         if output is None: output = {}
         for road in overview:
             next_level = self.follow_roadmap(road = road, output = output)
+        for road in overview:
+            self.convert_to_tuples(road = road, output = output)
         return output
 
     def test_it(self, l_tree, r_tree):
@@ -216,6 +230,10 @@ class Transmute(object):
             print (False)
             print ('|', r_tree)
             print ('|', r_recreated)
+            #print()
+            #for old, new in zip(sorted(r_tree.values()), sorted(r_recreated.values())):
+            #    print (old == new,
+            #          old, new)
         print(4 * '========')
         print(4 * '========')
         #print()
