@@ -15,7 +15,8 @@ right_form = {
     'first_name': 'joe',
     'last_name': 'stein',
     'triple_tuples': [(1, 3), (2, 6), (3, 9), (4, 12), (5, 15)],
-    'opposites': [{'first': 'low', 'second': 'high'}, {'first': 'big', 'second': 'small'}]
+    'opposites': [{'first': 'low', 'second': 'high'},
+                  {'first': 'big', 'second': 'small'}]
     }
 
 class TranslationModeller(object):
