@@ -145,6 +145,7 @@ class Transmute(object):
         next_level = output
         for step in road:
             if self.debug: print (road)
+            container_type, container_info, child_type, child_info, index = step
             if child_type is tuple:
                 next_level[index] = tuple(next_level[index])
             next_level = next_level[index]
