@@ -29,10 +29,6 @@ class TranslationModeller(object):
 
     def __init__(self, input_tree, output_tree, debug = False):
         if debug: self.debug = True
-        self.left = input_tree
-        self.l_structure = []
-        self.right = output_tree
-        self.r_structure = []
 
     def get_key_val(self, container, overview = None, navi = None, level = None):
         if overview is None: overview = []
@@ -54,12 +50,15 @@ class TranslationModeller(object):
     def get_dict(self, container, overview, navi, level):
         for k,v in container.items():
             if type(v) in INDEVISIBLE_FORMS:
+                print ('d key:', k)
+                print ('d val:', v)
                 if self.debug:
                     self.printout(
                         container, overview, navi, level, k, v, 'dict_1')
                 overview.append(navi[:] +\
                     [[dict, container.keys(), type(v), v, k]])
             else:
+                print ('d key:', k)
                 if self.debug:
                     self.printout(
                         container, overview, navi, level, k, v, 'dict_2')
@@ -73,6 +72,7 @@ class TranslationModeller(object):
     def get_list(self, container, overview, navi, level):
         for i,v in enumerate(container):
             if type(v) in INDEVISIBLE_FORMS:
+                print ('l val:', v)
                 if self.debug:
                     self.printout(
                         container, overview, navi, level, i, v, 'list_1')
@@ -92,6 +92,7 @@ class TranslationModeller(object):
     def get_tuple(self, container, overview, navi, level):
         for i,v in enumerate(container):
             if type(v) in INDEVISIBLE_FORMS:
+                print ('t val:', v)
                 overview.append(navi[:] +\
                     [[tuple, len(container), type(v), v, i]])
                 if self.debug:
@@ -149,7 +150,7 @@ class Transmute(object):
             if child_type is tuple:
                 next_level[index] = tuple(next_level[index])
             next_level = next_level[index]
-        return next_level
+        #return next_level
 
     def follow_roadmap(self, road, output):
         next_level = output
@@ -278,8 +279,8 @@ print()
 left_form = {'opposites': [('low','high'),('big','small')]}
 right_form = {'opposites': [{'first': 'low', 'second': 'high'}, {'first': 'big', 'second': 'small'}]}
 
-example = Transmute(left_form, right_form, False)
-example.test_it(left_form, right_form)
+#example = Transmute(left_form, right_form, False)
+#example.test_it(left_form, right_form)
 
 left_form = {
     'key': 'abc123',
@@ -298,4 +299,12 @@ right_form = {
 example = Transmute(left_form, right_form, False)
 example.test_it(left_form, right_form)
 
+
+print (len(example.r_overview))
+for x in example.r_overview:
+    print (x[-1])
+
+print (len(example.l_overview))
+for x in example.l_overview:
+    print (x[-1])
 
